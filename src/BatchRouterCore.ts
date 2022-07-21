@@ -54,11 +54,6 @@ export class BatchRouterCore {
         value: boolean | PromiseLike<boolean>
     ) => void = undefined;
 
-    /** next/router pushed or replaced during this render cycle.
-     * BatchRouter should not flush because pathname could have been changed.
-     */
-    private cancelled = false;
-
     public constructor(forceRender: () => void) {
         this.forceRender = forceRender;
     }
@@ -112,19 +107,7 @@ export class BatchRouterCore {
         return this.routePromise;
     }
     public async flush() {
-        // No need for clear() if nothing has been push/replaced.
-        if (!this.queue.length) {
-            // this.cancelled must be changed to false on every flush.
-            this.cancelled = false;
-            return;
-        }
-
-        // If query change has been cancelled, ignore everything in queue, and resolve false just like next/router does.
-        if (this.cancelled) {
-            this.resolveRoutePromise?.(false);
-            this.clear();
-            return;
-        }
+        if (!this.queue.length) return;
 
         let newQuery: QueryObject = { ...Router.query };
         let newAsQuery: QueryObject = parseUrl(Router.asPath).query;
@@ -177,14 +160,6 @@ export class BatchRouterCore {
         this.routePromise = new Promise(
             (resolve) => (this.resolveRoutePromise = resolve)
         );
-        this.cancelled = false;
-    }
-
-    /** Cancel query changes in this render cycle.
-     * Called when route has been changed.
-     */
-    public cancel() {
-        this.cancelled = true;
     }
 }
 
