@@ -6,3 +6,7 @@
 
 # builds
 /dist/
+*.tgz
+
+# misc
+.DS_Store
