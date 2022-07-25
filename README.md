@@ -90,30 +90,32 @@ batchRouter.push(url, as, options);
 
 -   You cannot put `string`. Only `object` with `query` and `hash` property is allowed.
 
--   `query` is similar to the original `push` parameter with some differences.
+-   `query` is similar to the original `query` parameter with some differences.
+
     1. Original `push` completely replaced the query string with the given object, but `batchRouter.push` merges object by default.
     2. `null` value removes the query parameter from the query string. Calling `batchRouter.push({query: {a: null}})` on `?a=1&b=2` results in `?b=2`.
     3. `undefined` value is ignored. Calling `batchRouter.push({query: {a: undefined}})` on `?a=1&b=2` results in `?a=1&b=2`.
     4. You can put a `function` instead of an `object` as query, similar to `React.useState`. However, the returned object is not merged automatically and must be merged manually within the function. Since merge is not automatically done, `undefined` value is handled as `null` and is removed from the query string.
 
-- `hash` is the "hash" part from `?param=foo#hash` url. It's similar to the original `hash` parameter with some differences.
+-   `hash` is the "hash" part from `?param=foo#hash` url. It's similar to the original `hash` parameter with some differences.
     1. Originally, `hash` was not preserved unless provided in the `router.push` call. `batchRouter.push` preserves the original hash if not supplied.
     2. `null` value removes the hash.
     3. When multiple `push` calls have `hash` parameter, the last one is applied.
     4. There is a bug which removing all query parameter doesn't work if there is hash in the URL. Such as this: `batchRouter.push({ query: ()=>({}), hash:"hash" })`
 
-
 `as`: { query?: SetQueryAction, hash?: string | null }
-- Similar to `url`.
+
+-   Similar to `url`.
 
 `options`: { scroll, shallow, locale?: string }
-- 
 
-
+-   `scroll`: Scroll to the top of the page after navigation. Defaults to `true`. When multiple `push`, `replace` calls are merged, all must have `scroll: false` to not scroll after navigation.
+- `shallow`: Update the path of the current page without rerunning `getStaticProps`, `getServerSideProps` or `getInitialProps`. Defaults to false. When merged, all must have `shallow: true` to not do shallow routing.
+- `locale`: Indicates locale of the new page. When merged, last one will be applied.
 
 ## Limitations
 
-`useBatchRouter` is currently not designed to replace `useRouter`. it's to be used together, and `useBatchRouter` should be used for changing only the query and hash part of the URL.
+`useBatchRouter` is currently not designed to replace `useRouter`. It's to be used together and `useBatchRouter` should be used for changing only the query and hash part of the URL.
 
 ## To-Do
 
@@ -123,7 +125,6 @@ batchRouter.push(url, as, options);
 
 2. `router` object returned from `useBatchRouter` only has `push` and `replace` methods.
 
-    - Components which doesn't need to read URL values but only change them might unnecessarily rerender if this feature is added.
-    - Global BatchRouter must be provided to avoid this shortcoming.
+    - Components which doesn't need to read URL values but only change them might unnecessarily rerender if this feature is added. Global `BatchRouter` must be provided to avoid this shortcoming.
 
 3. Add global `BatchRouter` like you can `import Router from "next/router"`
