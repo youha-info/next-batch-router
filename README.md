@@ -6,7 +6,7 @@ It allows for multiple `push` without overwriting each other.
 
 ## Why do I need it?
 
-With `next/router`, below code does not work.
+With `next/router`, the code below doesn't work.
 
 We expect query string to result in `?a=1&b=2`, but it results in `?a=1` or `?b=2`
 
@@ -103,15 +103,15 @@ batchRouter.push(url, as, options);
     3. When multiple `push` calls have `hash` parameter, the last one is applied.
     4. There is a bug which removing all query parameter doesn't work if there is hash in the URL. Such as this: `batchRouter.push({ query: ()=>({}), hash:"hash" })`
 
-`as`: { query?: SetQueryAction, hash?: string | null }
+`as`?: { query?: SetQueryAction, hash?: string | null }
 
--   Similar to `url`.
+-   Optional. How the brower URL bar will look like. Can be used to set param in router.query but hide it from the URL. Check [next/router documentation](https://nextjs.org/docs/api-reference/next/router#routerpush) for more detail. Similar to `url`.
 
-`options`: { scroll, shallow, locale?: string }
+`options`?: { scroll?: boolean, shallow?: boolean, locale?: string }
 
 -   `scroll`: Scroll to the top of the page after navigation. Defaults to `true`. When multiple `push`, `replace` calls are merged, all must have `scroll: false` to not scroll after navigation.
-- `shallow`: Update the path of the current page without rerunning `getStaticProps`, `getServerSideProps` or `getInitialProps`. Defaults to false. When merged, all must have `shallow: true` to not do shallow routing.
-- `locale`: Indicates locale of the new page. When merged, last one will be applied.
+-   `shallow`: Update the path of the current page without rerunning `getStaticProps`, `getServerSideProps` or `getInitialProps`. Defaults to false. When merged, all must have `shallow: true` to not do shallow routing.
+-   `locale`: Indicates locale of the new page. When merged, last one will be applied.
 
 ## Limitations
 
