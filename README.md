@@ -95,7 +95,7 @@ batchRouter.push(url, as, options);
     1. Original `push` completely replaced the query string with the given object, but `batchRouter.push` merges the object by default.
     2. `null` value removes the query parameter from the query string. Calling `batchRouter.push({query: {a: null}})` on `?a=1&b=2` results in `?b=2`.
     3. `undefined` value is ignored. Calling `batchRouter.push({query: {a: undefined}})` on `?a=1&b=2` results in `?a=1&b=2`.
-    4. You can put a `function` instead of an `object` as a query, similar to `React.useState`. However, the returned object is not merged automatically and must be merged manually within the function. Since merge is not automatically done, the `undefined` value is handled as `null` and is removed from the query string.
+    4. You can put a `function` instead of an `object` as a `query` parameter, similar to `React.useState`. However, the returned object is not merged automatically and must be merged manually within the function. Since merge is not automatically done, the `undefined` value is handled as `null` and is removed from the query string.
 
 -   `hash` is the "hash" part from `?param=foo#hash` url. It's similar to the original `hash` parameter with some differences.
     1. Originally, `hash` was not preserved unless provided in the `router.push` call. `batchRouter.push` preserves the original hash if not supplied.
