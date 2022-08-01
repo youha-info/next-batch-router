@@ -121,7 +121,7 @@ batchRouter.push(url, as, options);
 
 1. Allow `push` and `replace` to take parameters other than `query` and `hash`.
 
-    - This might be hard because it's problems to merge `push` calls if pathnames are changed.
+    - This might be hard because it's problematic to merge `push` calls if pathnames are changed.
 
 2. `router` object returned from `useBatchRouter` only has `push` and `replace` methods.
 
