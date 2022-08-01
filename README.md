@@ -128,3 +128,8 @@ batchRouter.push(url, as, options);
     - Components which doesn't need to read URL values but only change them might unnecessarily rerender if this feature is added. Global `BatchRouter` must be provided to avoid this shortcoming.
 
 3. Add global `BatchRouter` like you can `import Router from "next/router"`
+
+
+## License
+
+This project is licensed under the MIT License.
