@@ -18,7 +18,8 @@
   "homepage": "https://github.com/youha-info/next-batch-router",
   "scripts": {
     "clean": "rimraf dist",
-    "build": "yarn clean && rollup -c"
+    "build": "yarn clean && rollup -c",
+    "prepack": "yarn build"
   },
   "main": "./dist/cjs/index.js",
   "module": "./dist/es/index.js",
