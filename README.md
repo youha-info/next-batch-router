@@ -110,7 +110,7 @@ batchRouter.push(url, as, options);
 `options`?: { scroll?: boolean, shallow?: boolean, locale?: string }
 
 -   `scroll`: Scroll to the top of the page after navigation. Defaults to `true`. When multiple `push` and `replace` calls are merged, all must have `scroll: false` to not scroll after navigation.
--   `shallow`: Update the path of the current page without rerunning `getStaticProps`, `getServerSideProps` or `getInitialProps`. Defaults to false. When merged, all must have `shallow: true` to not do shallow routing.
+-   `shallow`: Update the path of the current page without rerunning `getStaticProps`, `getServerSideProps` or `getInitialProps`. Defaults to false. When merged, all must have `shallow: true` to do shallow routing.
 -   `locale`: Indicates locale of the new page. When merged, the last one will be applied.
 
 ## Limitations
