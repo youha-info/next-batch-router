@@ -1,17 +1,21 @@
 import { parseUrl } from "next/dist/shared/lib/router/utils/parse-url";
 import Router from "next/router";
 
-type QueryValue =
-    | string
+type NextQueryValue = string | string[] | undefined;
+type WriteQueryValue =
+    | NextQueryValue
     | number
     | boolean
-    | string[]
     | number[]
     | boolean[]
     | null;
-type QueryObject = Record<string, QueryValue | undefined>;
 
-type SetQueryAction = QueryObject | ((prev: QueryObject) => QueryObject);
+type NextQueryObject = Record<string, NextQueryValue>;
+type WriteQueryObject = Record<string, WriteQueryValue>;
+
+type SetQueryAction =
+    | WriteQueryObject
+    | ((prev: NextQueryObject) => WriteQueryObject);
 type QueueItem = {
     query: SetQueryAction;
     asQuery: SetQueryAction;
@@ -109,33 +113,25 @@ export class BatchRouterCore {
     public async flush() {
         if (!this.queue.length) return;
 
-        let newQuery: QueryObject = { ...Router.query };
-        let newAsQuery: QueryObject = parseUrl(Router.asPath).query;
+        let newQuery: NextQueryObject = { ...Router.query };
+        let newAsQuery: NextQueryObject = parseUrl(Router.asPath).query;
         let newHash: string | null = window.location.hash;
 
         for (const { query, asQuery, hash } of this.queue) {
-            if (isUpdaterFunction(query)) newQuery = query(newQuery);
-            else
-                Object.entries(query)
-                    .filter(([k, v]) => v !== undefined)
-                    .forEach(([k, v]) => (newQuery[k] = v));
+            if (isUpdaterFunction(query))
+                newQuery = turnWriteQueryObjectToNextQueryObject(
+                    query(newQuery)
+                );
+            else applyWriteQueryObjectToNextQueryObject(query, newQuery);
 
-            if (isUpdaterFunction(asQuery)) newAsQuery = asQuery(newAsQuery);
-            else
-                Object.entries(asQuery)
-                    .filter(([k, v]) => v !== undefined)
-                    .forEach(([k, v]) => (newAsQuery[k] = v));
+            if (isUpdaterFunction(asQuery))
+                newAsQuery = turnWriteQueryObjectToNextQueryObject(
+                    asQuery(newAsQuery)
+                );
+            else applyWriteQueryObjectToNextQueryObject(asQuery, newAsQuery);
 
             if (hash !== undefined) newHash = hash;
         }
-
-        Object.entries(newQuery).forEach(
-            ([k, v]) => v == null && delete newQuery[k]
-        );
-
-        Object.entries(newAsQuery).forEach(
-            ([k, v]) => v == null && delete newAsQuery[k]
-        );
 
         const routePromise = (this.pushHistory ? Router.push : Router.replace)(
             { query: newQuery },
@@ -163,8 +159,28 @@ export class BatchRouterCore {
     }
 }
 
-function isUpdaterFunction<T extends QueryObject>(
-    input: T | ((prevState: T) => T)
-): input is (prevState: T) => T {
+function isUpdaterFunction(
+    input: WriteQueryObject | ((prevState: NextQueryObject) => WriteQueryObject)
+): input is (prevState: NextQueryObject) => WriteQueryObject {
     return typeof input === "function";
+}
+
+function turnWriteQueryObjectToNextQueryObject(obj: WriteQueryObject) {
+    const nextQueryObj: NextQueryObject = {};
+    for (const [k, v] of Object.entries(obj))
+        if (v != null) nextQueryObj[k] = String(v);
+
+    return nextQueryObj;
+}
+
+function applyWriteQueryObjectToNextQueryObject(
+    write: WriteQueryObject,
+    obj: NextQueryObject
+) {
+    // TODO: Should clone?
+    for (const [k, v] of Object.entries(write)) {
+        if (v === undefined) continue;
+        else if (v === null) delete obj[k];
+        else obj[k] = Array.isArray(v) ? v.map(String) : String(v);
+    }
 }
