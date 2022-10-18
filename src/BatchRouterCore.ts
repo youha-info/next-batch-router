@@ -1,36 +1,38 @@
 import { parseUrl } from "next/dist/shared/lib/router/utils/parse-url";
 import Router from "next/router";
 
-type NextQueryValue = string | string[] | undefined;
-type WriteQueryValue =
-    | NextQueryValue
-    | number
-    | boolean
-    | number[]
-    | boolean[]
-    | null;
+export namespace BatchRouterTypes {
+    export type NextQueryValue = string | string[] | undefined;
+    export type WriteQueryValue =
+        | NextQueryValue
+        | number
+        | boolean
+        | number[]
+        | boolean[]
+        | null;
 
-type NextQueryObject = Record<string, NextQueryValue>;
-type WriteQueryObject = Record<string, WriteQueryValue>;
+    export type NextQueryObject = Record<string, NextQueryValue>;
+    export type WriteQueryObject = Record<string, WriteQueryValue>;
 
-type SetQueryAction =
-    | WriteQueryObject
-    | ((prev: NextQueryObject) => WriteQueryObject);
-type QueueItem = {
-    query: SetQueryAction;
-    asQuery: SetQueryAction;
-    hash?: string | null;
-};
-type PartialUrlObject = {
-    query?: SetQueryAction;
-    hash?: string | null;
-};
+    export type SetQueryAction =
+        | WriteQueryObject
+        | ((prev: NextQueryObject) => WriteQueryObject);
+    export type QueueItem = {
+        query: SetQueryAction;
+        asQuery: SetQueryAction;
+        hash?: string | null;
+    };
+    export type PartialUrlObject = {
+        query?: SetQueryAction;
+        hash?: string | null;
+    };
 
-type TransitionOptions = {
-    shallow?: boolean;
-    locale?: string; // false requires setting locale in the url, but BatchRouter only allows query and hash changes.
-    scroll?: boolean;
-};
+    export type TransitionOptions = {
+        shallow?: boolean;
+        locale?: string; // false requires setting locale in the url, but BatchRouter only allows query and hash changes.
+        scroll?: boolean;
+    };
+}
 
 /**
  * Subset of next/router that allows for multiple consecutive query string changes by batch updating and functinoal update.
@@ -46,7 +48,7 @@ export type BatchRouter = Pick<BatchRouterCore, "push" | "replace">;
 
 export class BatchRouterCore {
     private forceRender: () => void;
-    private queue: QueueItem[] = [];
+    private queue: BatchRouterTypes.QueueItem[] = [];
     private pushHistory = false;
     private shallow: boolean = false;
     private scroll: boolean = false;
@@ -63,26 +65,26 @@ export class BatchRouterCore {
     }
 
     public async push(
-        url: PartialUrlObject,
-        as?: PartialUrlObject,
-        options: TransitionOptions = {}
+        url: BatchRouterTypes.PartialUrlObject,
+        as?: BatchRouterTypes.PartialUrlObject,
+        options: BatchRouterTypes.TransitionOptions = {}
     ) {
         return this.change("push", url, as, options);
     }
 
     public async replace(
-        url: PartialUrlObject,
-        as?: PartialUrlObject,
-        options: TransitionOptions = {}
+        url: BatchRouterTypes.PartialUrlObject,
+        as?: BatchRouterTypes.PartialUrlObject,
+        options: BatchRouterTypes.TransitionOptions = {}
     ) {
         return this.change("replace", url, as, options);
     }
 
     private async change(
         history: "push" | "replace",
-        url: PartialUrlObject,
-        as?: PartialUrlObject,
-        options: TransitionOptions = {}
+        url: BatchRouterTypes.PartialUrlObject,
+        as?: BatchRouterTypes.PartialUrlObject,
+        options: BatchRouterTypes.TransitionOptions = {}
     ) {
         // Add to queue for batching
         this.queue.push({
@@ -113,8 +115,10 @@ export class BatchRouterCore {
     public async flush() {
         if (!this.queue.length) return;
 
-        let newQuery: NextQueryObject = { ...Router.query };
-        let newAsQuery: NextQueryObject = parseUrl(Router.asPath).query;
+        let newQuery: BatchRouterTypes.NextQueryObject = { ...Router.query };
+        let newAsQuery: BatchRouterTypes.NextQueryObject = parseUrl(
+            Router.asPath
+        ).query;
         let newHash: string | null = window.location.hash;
 
         for (const { query, asQuery, hash } of this.queue) {
@@ -160,13 +164,21 @@ export class BatchRouterCore {
 }
 
 function isUpdaterFunction(
-    input: WriteQueryObject | ((prevState: NextQueryObject) => WriteQueryObject)
-): input is (prevState: NextQueryObject) => WriteQueryObject {
+    input:
+        | BatchRouterTypes.WriteQueryObject
+        | ((
+              prevState: BatchRouterTypes.NextQueryObject
+          ) => BatchRouterTypes.WriteQueryObject)
+): input is (
+    prevState: BatchRouterTypes.NextQueryObject
+) => BatchRouterTypes.WriteQueryObject {
     return typeof input === "function";
 }
 
-function turnWriteQueryObjectToNextQueryObject(obj: WriteQueryObject) {
-    const nextQueryObj: NextQueryObject = {};
+function turnWriteQueryObjectToNextQueryObject(
+    obj: BatchRouterTypes.WriteQueryObject
+) {
+    const nextQueryObj: BatchRouterTypes.NextQueryObject = {};
     for (const [k, v] of Object.entries(obj))
         if (v != null) nextQueryObj[k] = String(v);
 
@@ -174,8 +186,8 @@ function turnWriteQueryObjectToNextQueryObject(obj: WriteQueryObject) {
 }
 
 function applyWriteQueryObjectToNextQueryObject(
-    write: WriteQueryObject,
-    obj: NextQueryObject
+    write: BatchRouterTypes.WriteQueryObject,
+    obj: BatchRouterTypes.NextQueryObject
 ) {
     // TODO: Should clone?
     for (const [k, v] of Object.entries(write)) {
