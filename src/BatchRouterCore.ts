@@ -180,7 +180,7 @@ function turnWriteQueryObjectToNextQueryObject(
 ) {
     const nextQueryObj: BatchRouterTypes.NextQueryObject = {};
     for (const [k, v] of Object.entries(obj))
-        if (v != null) nextQueryObj[k] = String(v);
+        if (v != null) nextQueryObj[k] = Array.isArray(v) ? v.map(String) : String(v);
 
     return nextQueryObj;
 }
