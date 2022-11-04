@@ -19,7 +19,11 @@
   "scripts": {
     "clean": "rimraf dist",
     "build": "yarn clean && rollup -c",
-    "prepack": "yarn build"
+    "prepack": "yarn build",
+    "dev": "conc -n NEXT,CYPRESS 'next -p 3050' 'cypress open'",
+    "ci": "next build && yarn ci:run",
+    "ci:run": "conc -n NEXT,CYPRESS --kill-others 'next start -p 3050' 'yarn cypress:ci'",
+    "cypress:ci":"cypress run --headless --config screenshotOnRunFailure=false,video=false"
   },
   "main": "./dist/cjs/index.js",
   "module": "./dist/es/index.js",
@@ -44,6 +48,8 @@
     "@rollup/plugin-commonjs": "^22.0.1",
     "@types/node": "^18.0.6",
     "@types/react": "^18.0.15",
+    "concurrently": "^7.5.0",
+    "cypress": "^10.11.0",
     "next": "^12.2.2",
     "prettier": "^2.7.1",
     "react": "^18.2.0",
