@@ -20,10 +20,11 @@
     "clean": "rimraf dist",
     "build": "yarn clean && rollup -c",
     "prepack": "yarn build",
+    "test": "jest --verbose",
     "dev": "conc -n NEXT,CYPRESS 'next -p 3050' 'cypress open'",
-    "ci": "next build && yarn ci:run",
-    "ci:run": "conc -n NEXT,CYPRESS --kill-others 'next start -p 3050' 'yarn cypress:ci'",
-    "cypress:ci":"cypress run --headless --config screenshotOnRunFailure=false,video=false"
+    "e2e": "next build && yarn e2e:run",
+    "e2e:run": "conc -n NEXT,CYPRESS --kill-others 'next start -p 3050' 'yarn cypress:ci'",
+    "cypress:ci": "cypress run --headless --config screenshotOnRunFailure=false,video=false"
   },
   "main": "./dist/cjs/index.js",
   "module": "./dist/es/index.js",
@@ -46,10 +47,12 @@
     "@babel/preset-react": "^7.18.6",
     "@rollup/plugin-babel": "^5.3.1",
     "@rollup/plugin-commonjs": "^22.0.1",
+    "@types/jest": "^29.2.1",
     "@types/node": "^18.0.6",
     "@types/react": "^18.0.15",
     "concurrently": "^7.5.0",
     "cypress": "^10.11.0",
+    "jest": "^29.2.2",
     "next": "^12.2.2",
     "prettier": "^2.7.1",
     "react": "^18.2.0",
@@ -58,6 +61,8 @@
     "rollup": "^2.77.0",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-typescript2": "^0.32.1",
+    "ts-jest": "^29.0.3",
+    "ts-node": "^10.9.1",
     "typescript": "^4.7.4"
   }
 }
