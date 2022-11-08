@@ -7,8 +7,7 @@ export namespace BatchRouterTypes {
         | NextQueryValue
         | number
         | boolean
-        | number[]
-        | boolean[]
+        | (string | number | boolean)[]
         | null;
 
     export type NextQueryObject = Record<string, NextQueryValue>;
@@ -180,7 +179,8 @@ function turnWriteQueryObjectToNextQueryObject(
 ) {
     const nextQueryObj: BatchRouterTypes.NextQueryObject = {};
     for (const [k, v] of Object.entries(obj))
-        if (v != null) nextQueryObj[k] = Array.isArray(v) ? v.map(String) : String(v);
+        if (v != null)
+            nextQueryObj[k] = Array.isArray(v) ? v.map(String) : String(v);
 
     return nextQueryObj;
 }
