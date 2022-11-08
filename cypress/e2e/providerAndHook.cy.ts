@@ -1,5 +1,3 @@
-/// <reference types="cypress" />
-
 import { TEST_URL } from "../constants";
 
 describe("useBatchRouter", () => {
