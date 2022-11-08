@@ -1,6 +1,6 @@
 name: Publish to npm registry
 
-on: 
+on:
   push:
     branches:
       - main

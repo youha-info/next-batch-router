@@ -1,6 +1,6 @@
 name: Continuous Integration
 
-on: 
+on:
   push:
     branches-ignore:
       - main
