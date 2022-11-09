@@ -121,19 +121,6 @@ batchRouter.replace(url, as, options);
 
 `useBatchRouter` is currently not designed to replace `useRouter`. It's to be used together and `useBatchRouter` should be used for changing only the query and hash part of the URL.
 
-## To-Do
-
-1. Allow `push` and `replace` to take parameters other than `query` and `hash`.
-
-    - This might be hard because it's problematic to merge `push` calls if pathnames are changed.
-
-2. `router` object returned from `useBatchRouter` only has `push` and `replace` methods.
-
-    - Components which doesn't need to read URL values but only change them might unnecessarily rerender if this feature is added. Global `BatchRouter` must be provided to avoid this shortcoming.
-
-3. Add global `BatchRouter` like you can `import Router from "next/router"`
-
-
 ## License
 
 This project is licensed under the MIT License.
