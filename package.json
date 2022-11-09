@@ -34,6 +34,7 @@
     "import": "./dist/es/index.js",
     "default": "./dist/es/index.js"
   },
+  "sideEffects": false,
   "files": [
     "dist"
   ],
