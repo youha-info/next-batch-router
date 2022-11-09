@@ -1,4 +1,7 @@
 # next-batch-router
+[![NPM](https://img.shields.io/npm/v/next-batch-router?color=red)](https://www.npmjs.com/package/next-batch-router)
+[![Bundle size](https://img.shields.io/bundlephobia/minzip/next-batch-router)](https://bundlephobia.com/package/next-batch-router)
+[![GitHub license](https://img.shields.io/github/license/youha-info/next-batch-router)](https://github.com/youha-info/next-batch-router/blob/main/LICENSE)
 
 An alternative to `useRouter` hook in `next/router` that batches `push` and `replace` calls.
 
