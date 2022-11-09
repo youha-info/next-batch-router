@@ -21,7 +21,10 @@ const config = [
         ],
         plugins: [
             peerDepsExternal(),
-            typescript({ tsconfig: "./tsconfig.build.json" }),
+            typescript({
+                tsconfig: "./tsconfig.build.json",
+                useTsconfigDeclarationDir: true,
+            }),
             babel({
                 babelHelpers: "bundled",
                 presets: ["@babel/preset-react"],
