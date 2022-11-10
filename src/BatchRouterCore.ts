@@ -45,7 +45,7 @@ export namespace BatchRouterTypes {
  */
 export type BatchRouter = Pick<BatchRouterCore, "push" | "replace">;
 
-export class BatchRouterCore {
+export class BatchRouterCore implements BatchRouter{
     private forceRender: () => void;
     private queue: BatchRouterTypes.QueueItem[] = [];
     private pushHistory = false;
