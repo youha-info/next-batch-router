@@ -1,6 +1,6 @@
 {
   "name": "next-batch-router",
-  "version": "1.0.0-pre.2",
+  "version": "1.0.0",
   "description": "An alternative to next/router that batches push and replace calls. It allows for multiple pushes without overwriting each other.",
   "repository": {
     "type": "git",
